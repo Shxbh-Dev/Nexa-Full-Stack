@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* --- GLOBAL RESPONSIVE RESET --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+
+  /* --- PREMIUM NATIVE APP FEEL (Unselectable UI) --- */
+* {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+/* EXCEPTIONS: We must allow typing inside inputs and textareas! */
+input, textarea, select {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* Prevent users from dragging images around the screen */
+img {
+  -webkit-user-drag: none;
+}
+  max-width: 100vw;
+  overflow-x: hidden; /* Strictly forbids horizontal scrolling */
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  overflow-x: hidden;
+}
+
+:root {
+  /* Nexa Brand Fonts */
+  --font-main: 'Inter', sans-serif;
+  
+  /* Nexa Color Palette */
+  --nexa-bg: #F4F2ED;         /* Warm Beige from the image */
+  --nexa-black: #111111;      /* Deep, rich black */
+  --nexa-olive: #4A5D4E;      /* The green from the headphones/banners */
+  --nexa-gray: #888888;
+  --nexa-white: #FFFFFF;
+  
+  /* Apple-like Smoothness */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-soft: 0 10px 40px rgba(0,0,0,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--nexa-bg);
+  color: var(--nexa-black);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+
+/* Ultra-smooth Button */
+.nexa-btn {
+  background-color: var(--nexa-black);
+  color: var(--nexa-white);
+  border: none;
+  padding: 16px 32px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 4px; /* Nexa uses sharp/slightly rounded buttons in the image */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nexa-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  background-color: #333;
+}
+
+/* Apple-style smooth hover for cards */
+.nexa-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.nexa-card:hover { transform: translateY(-6px); }
+
+/* Glassmorphism for Header */
+.glass-header {
+  background: rgba(244, 242, 237, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--nexa-bg); }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+/* --- Desktop Nav Defaults --- */
+.mobile-menu-btn { display: none; } /* Hide hamburger on desktop */
+.nav-content {
+  display: flex;
+  flex: 3;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* --- MOBILE RESPONSIVENESS PASS --- */
+@media (max-width: 850px) {
+  
+  /* 1. ANIMATED MOBILE MENU FIXES */
+  .header-nav { 
+    flex-direction: row !important; /* Keep Logo and Hamburger side by side */
+    justify-content: space-between !important;
+    padding-bottom: 0 !important;
+  }
+
+  .logo-box { text-align: left !important; width: auto !important; }
+  
+  /* Show and style the hamburger button */
+  .mobile-menu-btn { 
+    display: block; 
+    font-size: 24px; 
+    background: none; 
+    border: none; 
+    color: var(--nexa-black); 
+    cursor: pointer; 
+    font-weight: bold;
+    z-index: 101; /* Keep it above the dropdown */
+  }
+
+  /* The hidden dropdown container */
+  .nav-content {
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    right: 0; /* Replaces width: 100% to prevent overflow */
+    background: rgba(244, 242, 237, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 20px; 
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+  }
+
+  /* When React adds the "open" class */
+  .nav-content.open {
+    max-height: 500px; /* Expands smoothly */
+    opacity: 1;
+    padding: 30px 20px; /* Add padding back */
+  }
+
+  /* Restyle links to stack neatly inside the dropdown */
+  .centerLinks { 
+    display: flex !important; 
+    flex-direction: column; 
+    gap: 25px !important; 
+    text-align: center; 
+    width: 100%;
+  }
+  
+  .centerLinks a { font-size: 18px !important; font-weight: 600 !important; }
+
+  /* Restyle icons to sit at the bottom of the dropdown */
+  .right-icons {
+    flex-direction: column;
+    width: 100% !important;
+    align-items: center !important;
+    padding-top: 25px;
+    margin-top: 25px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    gap: 25px !important;
+  }
+
+  /* Shrink the search bar slightly on mobile so it fits with the icons */
+  .searchForm input {
+    width: 80px !important; 
+  }
+
+
+  /* 2. Home Screen Layouts (Keep your existing code here...) */
+  .hero-layout { flex-direction: column !important; text-align: center; padding-top: 30px !important; }
+  .hero-left { padding-right: 0 !important; margin-bottom: 40px !important; }
+  .hero-title { font-size: 42px !important; }
+  .hero-right { height: 350px !important; width: 100% !important; }
+  .pressStrip { gap: 15px !important; flex-wrap: wrap; }
+  
+  .promo-layout { grid-template-columns: 1fr !important; } /* Stack promo banners */
+  .features-layout { flex-direction: column !important; align-items: flex-start !important; gap: 25px; }
+
+  /* 3. Global Detail Pages (Product, Checkout, Profile) */
+  .split-layout { flex-direction: column !important; gap: 30px !important; }
+  .split-layout > div { width: 100% !important; flex: none !important; }
+  
+  /* 4. General Typography Scaling */
+  h1 { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+}
