@@ -13,7 +13,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const url = searchKeyword ? `/api/products?keyword=${searchKeyword}` : '/api/products';
-      const { data } = await axiosInstance.get('/api/products');
+      const { data } = await axiosInstance.get(url); // <-- Use the 'url' variable here!
       setProducts(data);
     };
     fetchProducts();
