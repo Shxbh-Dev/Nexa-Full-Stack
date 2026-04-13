@@ -17,25 +17,30 @@ const app = express();
 
 // --- 1. THE SECURITY GATE (CORS) ---
 // This MUST be the first middleware applied
+const app = express();
+
+// THE UNIVERSAL FIX:
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl) 
-    // or specifically from your Vercel domains
-    const allowedOrigins = [
-      'https://nexa-full-stack.vercel.app',
-      'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
-      'http://localhost:5173'
-    ];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // This tells the server to reflect the requester's origin
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+
+app.use(express.json());
+app.use(cookieParser());
+
+// Add this to handle the browser's "pre-check" (OPTIONS)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://nexa-full-stack.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Handle pre-flight OPTIONS requests for all routes
 app.options('*', cors());
