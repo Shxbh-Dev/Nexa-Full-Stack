@@ -1,5 +1,6 @@
 // frontend/src/App.jsx
 
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomeScreen from './screens/HomeScreen';
@@ -16,7 +17,7 @@ import AdminProductEdit from './screens/AdminProductEdit';
 import AdminOrderList from './screens/AdminOrderList';
 import AdminUserList from './screens/AdminUserList';
 import ProfileScreen from './screens/ProfileScreen';
-import axios from 'axios';
+
  
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;
