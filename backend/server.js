@@ -17,7 +17,7 @@ const app = express();
 // --- 1. THE ONLY CORS BLOCK YOU NEED ---
 // Do not add another app.use(cors()) anywhere else!
 const allowedOrigins = [
-  'https://nexa-full-stack.vercel.app',
+  'https://nexa-full-stack-v9fj.vercel.app/',
   'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
   'http://localhost:5173'
 ];
