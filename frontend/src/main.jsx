@@ -4,21 +4,23 @@ import App from './App.jsx'
 import './index.css'
 import { CartProvider } from './context/CartContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
-import axios from 'axios';
+// --- THIS LINE WAS LIKELY MISSING OR MISSPELLED ---
+import axios from 'axios'; 
 
 // --- THE UNIVERSAL AXIOS CONFIG ---
-// 1. Ensure the URL is clean (no trailing slash)
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Fallback to your Render URL if the environment variable is missing
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://nexa-full-stack-1.onrender.com';
 axios.defaults.baseURL = API_BASE_URL;
-
-// 2. This is the key for Cookies (JWT) to work between Vercel and Render
 axios.defaults.withCredentials = true;
 
-// 3. Add a "Request Interceptor" to force headers on every single click
-axios.interceptors.request.use((config) => {
-  config.withCredentials = true;
-  return config;
-});
+// Interceptor to force cookies (JWT) on every single request
+axios.interceptors.request.use(
+  (config) => {
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
