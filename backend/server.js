@@ -15,24 +15,23 @@ connectDB();
 const app = express();
 
 // --- 1. THE ONLY CORS BLOCK YOU NEED ---
-// Do not add another app.use(cors()) anywhere else!
+// Do not add another app.use(cors()) anywhere else! 
 const allowedOrigins = [
-  'https://nexa-full-stack-v9fj.vercel.app/',
-  // ADD THIS NEW ONE FROM YOUR SCREENSHOT:
-  ''
+  'https://nexa-full-stack.vercel.app',
+  'https://nexa-full-stack-v9fj.vercel.app', // The new one from your error!
   'https://nexa-full-stack-v9fj-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
   'http://localhost:5173'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
+    // 1. Allow requests with no origin (like mobile apps)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // 2. Check if origin is in our list OR is a vercel preview link
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
-      console.log("Blocked by CORS:", origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
