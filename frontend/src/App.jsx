@@ -16,6 +16,7 @@ import AdminProductEdit from './screens/AdminProductEdit';
 import AdminOrderList from './screens/AdminOrderList';
 import AdminUserList from './screens/AdminUserList';
 import ProfileScreen from './screens/ProfileScreen';
+import axios from 'axios';
  
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;

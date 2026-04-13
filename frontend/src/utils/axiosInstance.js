@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios from 'axios'; // <--- THIS MUST BE HERE
 
 const axiosInstance = axios.create({
-  // Use VITE_ prefix for Vite projects
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
-  withCredentials: true
+  baseURL: import.meta.env.VITE_API_URL || 'https://nexa-full-stack-1.onrender.com',
+  withCredentials: true,
 });
 
 export default axiosInstance;
