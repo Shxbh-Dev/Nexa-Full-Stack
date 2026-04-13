@@ -18,16 +18,21 @@ const app = express();
 // Do not add another app.use(cors()) anywhere else!
 const allowedOrigins = [
   'https://nexa-full-stack-v9fj.vercel.app/',
-  'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
+  // ADD THIS NEW ONE FROM YOUR SCREENSHOT:
+  ''
+  'https://nexa-full-stack-v9fj-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
   'http://localhost:5173'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // If the request has no origin (like mobile) or is in our allowed list, allow it
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log("Blocked by CORS:", origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
