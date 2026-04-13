@@ -15,26 +15,24 @@ connectDB();
 
 const app = express();
 
-// --- 1. MANUAL CORS HEADERS (THE RESET) ---
+
+// 1. CLEAR AND EXPLICIT CORS SETTINGS
+app.use(cors({
+  origin: 'https://nexa-full-stack.vercel.app', // NO wildcard '*', NO 'true'
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// 2. MANUAL HEADER OVERRIDE (to be 100% sure)
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://nexa-full-stack.vercel.app',
-    'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
-    'http://localhost:5173'
-  ];
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Origin', 'https://nexa-full-stack.vercel.app');
   res.header('Access-Control-Allow-Credentials', 'true');
-
-  // Handle preflight (OPTIONS)
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({});
+    return res.sendStatus(200);
   }
   next();
 });
