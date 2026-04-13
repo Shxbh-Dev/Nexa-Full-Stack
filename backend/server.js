@@ -5,7 +5,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 
-// Route Imports
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -15,30 +14,27 @@ connectDB();
 
 const app = express();
 
+// --- 1. THE ONLY CORS BLOCK YOU NEED ---
+// Do not add another app.use(cors()) anywhere else!
+const allowedOrigins = [
+  'https://nexa-full-stack.vercel.app',
+  'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
+  'http://localhost:5173'
+];
 
-// 1. CLEAR AND EXPLICIT CORS SETTINGS
 app.use(cors({
-  origin: 'https://nexa-full-stack.vercel.app', // NO wildcard '*', NO 'true'
+  origin: function (origin, callback) {
+    // If the request has no origin (like mobile) or is in our allowed list, allow it
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
-
-// 2. MANUAL HEADER OVERRIDE (to be 100% sure)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://nexa-full-stack.vercel.app');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Use standard cors as a backup
-app.use(cors());
 
 // --- 2. MIDDLEWARE ---
 app.use(express.json());
@@ -71,7 +67,6 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold);
 });
