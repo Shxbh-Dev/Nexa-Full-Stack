@@ -15,7 +15,7 @@ const AdminProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get('/api/products');
+      const { data } = awai axios.get('/api/products');
       setProducts(data);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
