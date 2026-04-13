@@ -15,9 +15,12 @@ connectDB();
 
 const app = express();
 
+// backend/server.js
+
 app.use(cors({
   origin: [
     'https://nexa-full-stack.vercel.app', 
+    'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
     'http://localhost:5173'
   ],
   credentials: true
