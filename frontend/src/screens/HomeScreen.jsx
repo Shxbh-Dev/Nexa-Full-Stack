@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import Product from '../components/Product';
 
 const HomeScreen = () => {
@@ -13,7 +13,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const url = searchKeyword ? `/api/products?keyword=${searchKeyword}` : '/api/products';
-      const { data } = await axios.get(url);
+      const { data } = await axiosInstance.get('/api/products');
       setProducts(data);
     };
     fetchProducts();
