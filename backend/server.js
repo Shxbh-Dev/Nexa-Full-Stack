@@ -1,13 +1,13 @@
-// backend/server.js
-
 import express from 'express';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
+
+// Route Imports
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import cookieParser from 'cookie-parser';
 import orderRoutes from './routes/orderRoutes.js';
 
 dotenv.config();
@@ -15,30 +15,46 @@ connectDB();
 
 const app = express();
 
-// backend/server.js
-
+// --- 1. THE SECURITY GATE (CORS) ---
+// This MUST be the first middleware applied
 app.use(cors({
-  origin: [
-    'https://nexa-full-stack.vercel.app', 
-    'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
-    'http://localhost:5173'
-  ],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl) 
+    // or specifically from your Vercel domains
+    const allowedOrigins = [
+      'https://nexa-full-stack.vercel.app',
+      'https://nexa-full-stack-git-main-shubham-singhs-projects-d16d74cf.vercel.app',
+      'http://localhost:5173'
+    ];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
+// Handle pre-flight OPTIONS requests for all routes
+app.options('*', cors());
+
+// --- 2. STANDARD MIDDLEWARE ---
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Main default route
+// --- 3. ROUTES ---
 app.get('/', (req, res) => {
   res.send('NEXA E-commerce API is running...');
 });
 
-// Mount the product routes to the /api/products path
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Custom error handling middleware (handles 404s and general errors)
+// --- 4. ERROR HANDLING ---
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
