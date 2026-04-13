@@ -1,6 +1,4 @@
-// frontend/src/screens/CheckoutScreen.jsx
-
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
@@ -9,17 +7,26 @@ import { getPremiumImage } from '../utils/imageMap';
 
 const CheckoutScreen = () => {
   const { cartItems, shippingAddress, saveShippingAddress } = useContext(CartContext);
-  const { userInfo } = useContext(AuthContext); 
+  const { userInfo, setUserInfo } = useContext(AuthContext); // Added setUserInfo to update global state
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState(shippingAddress?.email || userInfo?.email || '');
-  const [phone, setPhone] = useState(shippingAddress?.phone || '');
-  const [name, setName] = useState(shippingAddress?.name || userInfo?.name || '');
-  const [address, setAddress] = useState(shippingAddress?.address || '');
+  // State initialized with context data if available
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
   
   const [password, setPassword] = useState(''); 
   const [authError, setAuthError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Sync state when context or userInfo changes
+  useEffect(() => {
+    setEmail(shippingAddress?.email || userInfo?.email || '');
+    setPhone(shippingAddress?.phone || '');
+    setName(shippingAddress?.name || userInfo?.name || '');
+    setAddress(shippingAddress?.address || '');
+  }, [shippingAddress, userInfo]);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
   const tax = subtotal * 0.08; 
@@ -30,31 +37,29 @@ const CheckoutScreen = () => {
     setAuthError(null);
     setLoading(true);
 
-    // 1. FRICTIONLESS REGISTRATION LOGIC
-    if (!userInfo) {
-      try {
-        const config = { headers: { 'Content-Type': 'application/json' } };
-        const { data } = await axios.post('/api/users', { name, email, password }, config);
+    try {
+      // 1. REGISTRATION LOGIC (For new users)
+      if (!userInfo) {
+        // We don't need to manually pass headers because of your main.jsx axios defaults
+        const { data } = await axios.post('/api/users', { name, email, password });
         
-        // Save the new user to local storage
+        // Update both LocalStorage AND the AuthContext state immediately
         localStorage.setItem('userInfo', JSON.stringify(data));
-        
-      } catch (err) {
-        setAuthError(err.response?.data?.message || 'Registration failed. Email might be in use.');
-        setLoading(false);
-        return; 
+        if (setUserInfo) {
+            setUserInfo(data); 
+        }
       }
-    }
 
-    // 2. Save the shipping details
-    saveShippingAddress({ email, phone, name, address });
-    
-    // 3. FIXED: Redirect to /payment instead of /placeorder
-    if (!userInfo) {
-      // Force reload for new users so AuthContext updates
-      window.location.href = '/payment'; 
-    } else {
+      // 2. Save the shipping details to context
+      saveShippingAddress({ email, phone, name, address });
+      
+      // 3. Navigate to Payment page
+      // Using navigate is better than window.location.href because it keeps the state
       navigate('/payment');
+
+    } catch (err) {
+      setAuthError(err.response?.data?.message || 'Registration failed. Email might be in use.');
+      setLoading(false);
     }
   };
 

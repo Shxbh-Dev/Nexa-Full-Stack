@@ -17,6 +17,19 @@ import AdminOrderList from './screens/AdminOrderList';
 import AdminUserList from './screens/AdminUserList';
 import ProfileScreen from './screens/ProfileScreen';
  
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.withCredentials = true;
+
+// This "Interceptor" is the most powerful way to fix "No Token" errors
+axios.interceptors.request.use(
+  (config) => {
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   return (
